@@ -1,0 +1,14 @@
+{
+  "name": "bootstrapper",
+  "version": "0.0.1",
+  "description": "RCoherence bootstrap API service",
+  "main": "handler.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "bootstrapper"
+  ],
+  "author": "Ali Abbas",
+  "license": "ISC"
+}
