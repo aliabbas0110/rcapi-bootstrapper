@@ -10,5 +10,8 @@
     "bootstrapper"
   ],
   "author": "Ali Abbas",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-domain-manager": "^2.6.0"
+  }
 }

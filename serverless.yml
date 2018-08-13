@@ -1,104 +1,59 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
+
 
 service: bootstrapper
 
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
+custom:
+  defaults:
+    stage: localdev
+    region: eu-west-1
+    profile: local
+    domain: iambootstrap.api.ccoherence.com
+  config:
+    stage: ${opt:stage,"${self:custom.defaults.stage}"}
+    profile: ${opt:profile, "${self:custom.defaults.profile}"}
+    region: ${opt:region, "${self:custom.defaults.region}"}
+    domain: ${opt:domain, "${self:custom.defaults.domain}"}
+  customDomain:
+    domainName: ${self:custom.config.domain}
+    stage: ${self:custom.config.stage}
+    basePath: ${self:custom.config.stage}
+    certificateName: '*.api.ccoherence.com'
+    createRoute53Record: true
+    endPointType: 'regional'
+
+plugins:
+  - serverless-domain-manager
 
 provider:
   name: aws
   runtime: nodejs6.10
-
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+  stage: ${self:custom.config.stage}
+  region: ${self:custom.config.region}
+  profile: ${self:custom.config.profile}
 
 functions:
-  hello:
-    handler: handler.hello
+  deviceAdd:
+    handler: handler.deviceAdd
+    events:
+      - http:
+         path: device
+         method: post
+  deviceDelete:
+    handler: handler.deviceDelete
+    events:
+      - http:
+         path: device/{id}
+         method: delete
+  deviceGetAll:
+    handler: handler.deviceGetAll
+    events:
+      - http:
+         path: device
+         method: get
 
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
-#    events:
-#      - http:
-#          path: users/create
-#          method: get
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
-#      - cloudwatchEvent:
-#          event:
-#            source:
-#              - "aws.ec2"
-#            detail-type:
-#              - "EC2 Instance State-change Notification"
-#            detail:
-#              state:
-#                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
-
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+  deviceGetOne:
+    handler: handler.deviceGetOne
+    events:
+      - http:
+         path: device/{id}
+         method: get
