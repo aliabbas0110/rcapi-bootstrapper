@@ -7,7 +7,7 @@ custom:
     stage: localdev
     region: eu-west-1
     profile: local
-    domain: iambootstrap.api.ccoherence.com
+    domain: ${opt:apidomain, "${self:custom.defaults.apidomain}"}
   config:
     stage: ${opt:stage,"${self:custom.defaults.stage}"}
     profile: ${opt:profile, "${self:custom.defaults.profile}"}
